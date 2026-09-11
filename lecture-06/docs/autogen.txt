@@ -1,0 +1,29 @@
+# Course notes on AutoGen (CSCI 599 lecture 06 demo corpus)
+# High-level summary for the planning-patterns exercises - not official docs.
+
+AutoGen (from Microsoft) models multi-agent systems as conversable agents
+that exchange chat messages - the core abstraction is the conversation,
+not a graph or a crew.
+
+State model:
+- State is the running message history of the conversation(s) between
+  agents. An agent's "state" is largely what it can see in that history
+  plus its own configured system message and tools.
+- A GroupChatManager agent can orchestrate multiple agents talking in
+  turn, selecting who speaks next based on the conversation so far -
+  state handoff happens by one agent's reply becoming the next agent's
+  input message.
+- Nested chats let a sub-conversation run and then report a summary back
+  into the parent conversation, which is how AutoGen composes multi-step
+  work without a separate typed state object.
+
+Orchestration patterns supported:
+- Two-agent chat (e.g. an assistant agent and a UserProxyAgent that can
+  execute code or ask a human).
+- Group chat with a manager selecting the next speaker.
+- Nested/sequential chats for multi-step pipelines.
+
+Compared to LangGraph's single shared typed state, AutoGen's state is
+distributed across each agent's message history - flexible for
+open-ended multi-agent conversation, but harder to snapshot or replay as
+one coherent object.

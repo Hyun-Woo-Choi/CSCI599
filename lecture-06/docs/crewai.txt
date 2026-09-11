@@ -1,0 +1,27 @@
+# Course notes on CrewAI (CSCI 599 lecture 06 demo corpus)
+# High-level summary for the planning-patterns exercises - not official docs.
+
+CrewAI is a role-based multi-agent framework: you describe a "crew" of
+agents, each with a role, a goal, and a backstory, and assign them tasks.
+
+State model:
+- State is implicit and conversational rather than a single typed object.
+  Each agent carries its own context (role, goal, memory of its own
+  tasks); handoff between agents happens by passing a task's output as
+  another agent's input, not by merging into one shared structure.
+- There is no built-in graph of explicit state transitions to inspect -
+  the "state" of a run is effectively the sequence of task outputs
+  produced so far.
+- Optional short-term / long-term memory modules exist, but they sit
+  alongside the crew rather than being the crew's single source of truth.
+
+Orchestration patterns supported:
+- Sequential process: tasks run in a fixed order, each agent's output
+  feeding the next.
+- Hierarchical process: a manager agent (often LLM-driven) delegates
+  tasks to worker agents and can re-delegate based on results.
+
+Compared to LangGraph, CrewAI trades explicit, typed, checkpointable
+state for a faster path to "define a team of agents and let them work" -
+less fine-grained control over state handoff, but less orchestration code
+to write for a straightforward collaborative task.

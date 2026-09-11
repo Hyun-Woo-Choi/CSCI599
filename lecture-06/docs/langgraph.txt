@@ -1,0 +1,29 @@
+# Course notes on LangGraph (CSCI 599 lecture 06 demo corpus)
+# High-level summary for the planning-patterns exercises - not official docs.
+
+LangGraph is a graph-based orchestration library (from the LangChain
+ecosystem) for building stateful, multi-step LLM applications.
+
+State model:
+- The developer defines a single shared State object (often a TypedDict
+  or dataclass) that flows through the whole graph.
+- Nodes are plain functions: they receive the current state and return a
+  partial update to merge back in.
+- Edges connect nodes; conditional edges let a function decide the next
+  node based on the current state (branching, loops, re-planning).
+- State handoff between steps is explicit and typed - every node reads
+  and writes the same well-defined object, which is what makes the graph
+  inspectable and debuggable.
+
+Persistence and control:
+- A checkpointer (e.g. InMemorySaver, or a database-backed one) snapshots
+  state after each node, enabling replay, time travel, and resuming a run
+  after a crash or a human-in-the-loop pause.
+- Because state is explicit and checkpointed, LangGraph is well suited to
+  long-running or production workloads where you need to inspect, resume,
+  or audit exactly what the agent was doing at each step.
+
+Orchestration patterns supported:
+- Single-agent ReAct loops, Plan-and-Execute graphs, and multi-agent
+  supervisor/hierarchical graphs are all expressed the same way: nodes +
+  edges over one shared state object.
